@@ -1,0 +1,10 @@
+[package]
+name = "mastermind"
+version = "0.1.0"
+authors = ["twistfons@live.nl"]
+edition = "2024"
+
+[dependencies]
+colored = "3.0.0"
+rand = "0.9.1"
+term = "1.0.2"

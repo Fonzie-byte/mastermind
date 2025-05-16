@@ -1,0 +1,9 @@
+- [x] Generate 4-digit code
+- [x] Colourise
+- [x] Take input
+- [x] Override with colour
+- [ ] Compare to code
+- [ ] Reds for correct colour and place
+- [ ] Whites for correct colour, incorrect place
+- [ ] Win if 4 reds
+- [x] 10 chances, lost and show code
