@@ -51,15 +51,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d750af042f7ef4f724306de029d18836c26c1765a54a6a3f094cbd23a7267ffa"
 
 [[package]]
-name = "mastermind"
-version = "0.1.0"
-dependencies = [
- "colored",
- "rand",
- "term",
-]
-
-[[package]]
 name = "ppv-lite86"
 version = "0.2.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -140,6 +131,15 @@ checksum = "8a984c8d058c627faaf5e8e2ed493fa3c51771889196de1016cf9c1c6e90d750"
 dependencies = [
  "home",
  "windows-sys",
+]
+
+[[package]]
+name = "the_1a2b_game"
+version = "0.1.0"
+dependencies = [
+ "colored",
+ "rand",
+ "term",
 ]
 
 [[package]]
