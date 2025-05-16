@@ -19,4 +19,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Audit
-      run: cargo audit --deny warnings
+      run: cargo install cargo-audit --locked && cargo audit --deny warnings
