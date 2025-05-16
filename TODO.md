@@ -1,3 +1,4 @@
+- [ ] **TESTS**
 - [x] Generate 4-digit code
 - [x] Colourise
 - [x] Take input
