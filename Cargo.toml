@@ -1,5 +1,5 @@
 [package]
-name = "mastermind"
+name = "rs_1a2b_game"
 version = "0.1.0"
 authors = ["twistfons@live.nl"]
 edition = "2024"
