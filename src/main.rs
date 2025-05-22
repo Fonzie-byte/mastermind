@@ -47,6 +47,7 @@ fn main() {
         let mut whites = 0;
 
         // Evaluate!
+        // Todo: First check for As and remove them, then check for Bs and remove them!
         let mut i = 0;
         let mut secret_copy = secret.clone();
         for c in guess {
