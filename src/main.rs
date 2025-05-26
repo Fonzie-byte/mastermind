@@ -35,6 +35,8 @@ fn main() {
         // If all four are completely correct, the player has won!
         if a == 4 {
             println!("\n{}", "You cracked the code!".green());
+
+            pause();
             process::exit(0);
         }
     } // End while
@@ -51,4 +53,6 @@ fn main() {
 
     // "Trailing" newline because most, if not all, shells expect it.
     println!();
+
+    pause();
 }

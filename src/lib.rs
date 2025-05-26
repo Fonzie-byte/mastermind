@@ -1,4 +1,5 @@
 use colored::{ColoredString, Colorize};
+use std::io::{Read, Write, stdin, stdout};
 use std::{io, panic};
 
 /// Explains the game, returns how many chances the player has, and generates and returns the secret.
@@ -49,6 +50,7 @@ fn validate_guess(guess: &[char]) -> [u32; 4] {
     if guess.len() != 4 {
         panic::set_hook(Box::new(|_| {
             eprintln!("\n{}", "Please input exactly four digits!".yellow());
+            pause();
         }));
         panic!();
     }
@@ -57,6 +59,7 @@ fn validate_guess(guess: &[char]) -> [u32; 4] {
     if guess.iter().any(|c| *c < '1' || *c > '8') {
         panic::set_hook(Box::new(|_| {
             eprintln!("\n{}", "Please only input numbers 1-8.".yellow());
+            pause();
         }));
         panic!();
     };
@@ -168,6 +171,15 @@ pub fn colour_number(c: u32) -> ColoredString {
             c
         ),
     }
+}
+
+/// Waits for the player to press the Enter/Return-key.
+/// Credit goes to [u/K900_](https://old.reddit.com/r/rust/comments/8tfyof/noob_question_pause/e177530/)
+pub fn pause() {
+    let mut stdout = stdout();
+    stdout.write_all(b"Press Enter to quit...").unwrap();
+    stdout.flush().unwrap();
+    stdin().read_exact(&mut [0]).unwrap();
 }
 
 #[cfg(test)]
