@@ -32,36 +32,48 @@ pub fn setup(chances: u32) -> (u32, [u32; 4]) {
 
 /// Parses an inputted guess from the terminal and returns it.
 pub fn parse_guess() -> [u32; 4] {
-    // We need it as a "container", first.
-    let mut guess = String::new();
+    // Keep trying until `validate_guess` gives no errors.
+    loop {
+        // We need it as a "container", first.
+        let mut guess = String::new();
 
-    // This reads it from CLI input.
-    io::stdin().read_line(&mut guess).unwrap();
+        // Keep trying until `read_line` gives no errors.
+        loop {
+            // This reads it from CLI input.
+            match io::stdin().read_line(&mut guess) {
+                Ok(_) => break,
+                Err(error) => eprintln!("Error reading your input: {error}\nPlease try again."),
+            }
+        }
 
-    // No trailing newline or any other funny business.
-    let guess: Vec<char> = guess.trim().chars().collect();
+        // No trailing newline or any other funny business.
+        let guess: Vec<char> = guess.trim().chars().collect();
 
-    // Validate and return.
-    validate_guess(&guess)
+        // Validate and return.
+        let guess = validate_guess(&guess);
+        if guess == [9, 9, 9, 9] {
+            println!("What is your guess?");
+        } else {
+            return guess;
+        }
+    }
 }
 
 /// Checks if the guess input is valid, by checking its length and contents.
 fn validate_guess(guess: &[char]) -> [u32; 4] {
     if guess.len() != 4 {
-        panic::set_hook(Box::new(|_| {
-            eprintln!("\n{}", "Please input exactly four digits!".yellow());
-            pause();
-        }));
-        panic!();
+        eprintln!("\n{}", "Please input exactly four digits!".yellow());
+
+        // Return something impossible for me to figure out something went wrong.
+        // There has to be a better way to do this.
+        return [9, 9, 9, 9];
     }
 
     // Print an error and quit if any of the characters are not 1-8.
     if guess.iter().any(|c| *c < '1' || *c > '8') {
-        panic::set_hook(Box::new(|_| {
-            eprintln!("\n{}", "Please only input numbers 1-8.".yellow());
-            pause();
-        }));
-        panic!();
+        eprintln!("\n{}", "Please only input numbers 1-8.".yellow());
+
+        return [9, 9, 9, 9];
     };
 
     // Convert the slice to [u32; 4] and return it.
