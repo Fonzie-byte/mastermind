@@ -1,4 +1,3 @@
-extern crate term;
 use colored::Colorize;
 use std::process;
 use the_1a2b_game::*;

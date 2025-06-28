@@ -9,8 +9,8 @@ use std::{io, panic};
 /// use the_1a2b_game::setup;
 ///
 /// let (mut chances, secret) = setup(15);
-/// assert_eq!(15, chances);
-/// assert_eq!(4, secret.len());
+/// assert_eq!(chances, 15);
+/// assert_eq!(secret.len(), 4);
 /// ```
 pub fn setup(chances: u32) -> (u32, [u32; 4]) {
     println!("I devised a secret code, consisting out of four digits of 1-8.");
@@ -200,19 +200,17 @@ mod tests {
     fn test_validate_guess() {
         use super::*;
 
+        // First the happy flow
         let guess = ['1', '2', '3', '4'];
         validate_guess(&guess);
 
         let long_guess = ['1', '2', '3', '4', '5'];
-        let result = std::panic::catch_unwind(|| validate_guess(&long_guess));
-        assert!(result.is_err());
+        assert_eq!(validate_guess(&long_guess), [9, 9, 9, 9]);
 
         let short_guess = ['1', '2', '3'];
-        let result = std::panic::catch_unwind(|| validate_guess(&short_guess));
-        assert!(result.is_err());
+        assert_eq!(validate_guess(&short_guess), [9, 9, 9, 9]);
 
         let illegal_character_guess = ['1', '2', '3', '🦀'];
-        let result = std::panic::catch_unwind(|| validate_guess(&illegal_character_guess));
-        assert!(result.is_err());
+        assert_eq!(validate_guess(&illegal_character_guess), [9, 9, 9, 9]);
     }
 }
