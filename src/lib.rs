@@ -1,5 +1,5 @@
 use colored::{ColoredString, Colorize};
-use std::io::{Read, Write, stdin, stdout};
+use std::io::{Read, Write, stderr, stdin, stdout};
 use std::{io, panic};
 
 /// Explains the game, returns how many chances the player has, and generates and returns the secret.
@@ -50,7 +50,7 @@ pub fn parse_guess() -> [u32; 4] {
         let guess: Vec<char> = guess.trim().chars().collect();
 
         // Validate and return.
-        let guess = validate_guess(&guess);
+        let guess = validate_guess(&guess, &mut stderr());
         if guess == [9, 9, 9, 9] {
             println!("What is your guess?");
         } else {
@@ -60,9 +60,46 @@ pub fn parse_guess() -> [u32; 4] {
 }
 
 /// Checks if the guess input is valid, by checking its length and contents.
-fn validate_guess(guess: &[char]) -> [u32; 4] {
+///
+/// # Example outputs
+/// ```
+/// use the_1a2b_game::validate_guess;
+/// use colored::Colorize;
+///
+/// let mut cli_error = Vec::new();
+///
+/// // Happy flow: Returns the ints of the input and logs no errors!
+/// let guess = ['1', '2', '3', '4'];
+/// assert_eq!(validate_guess(&guess, &mut cli_error), [1, 2, 3, 4]);
+/// assert_eq!(cli_error, Vec::new());
+///
+/// // Prints errors and return an impossible guess if the input was too short...
+/// let guess = ['1', '2', '3'];
+/// assert_eq!(validate_guess(&guess, &mut cli_error), [9, 9, 9, 9]);
+/// assert_eq!(cli_error, b"\nPlease input exactly four digits!\n");
+/// // Let's reset this before the next run.
+/// cli_error = Vec::new();
+///
+/// // ...or too long.
+/// let guess = ['1', '2', '3', '4', '5'];
+/// assert_eq!(validate_guess(&guess, &mut cli_error), [9, 9, 9, 9]);
+/// assert_eq!(cli_error, b"\nPlease input exactly four digits!\n");
+/// // Let's reset this before the next run.
+/// cli_error = Vec::new();
+///
+/// // Something similar happens when any of the items are not a digit between 1 and 8 (both inclusive)
+/// let guess = ['1', '2', '3', '🦀'];
+/// assert_eq!(validate_guess(&guess, &mut cli_error), [9, 9, 9, 9]);
+/// assert_eq!(cli_error, b"\nPlease only input numbers 1-8\n");
+/// ```
+pub fn validate_guess(guess: &[char], mut error_output: impl Write) -> [u32; 4] {
     if guess.len() != 4 {
-        eprintln!("\n{}", "Please input exactly four digits!".yellow());
+        writeln!(
+            error_output,
+            "\n{}",
+            "Please input exactly four digits!".yellow()
+        )
+        .unwrap();
 
         // Return something impossible for me to figure out something went wrong.
         // There has to be a better way to do this.
@@ -71,7 +108,12 @@ fn validate_guess(guess: &[char]) -> [u32; 4] {
 
     // Print an error and quit if any of the characters are not 1-8.
     if guess.iter().any(|c| *c < '1' || *c > '8') {
-        eprintln!("\n{}", "Please only input numbers 1-8.".yellow());
+        writeln!(
+            error_output,
+            "\n{}",
+            "Please only input numbers 1-8".yellow()
+        )
+        .unwrap();
 
         return [9, 9, 9, 9];
     };
@@ -87,7 +129,7 @@ fn validate_guess(guess: &[char]) -> [u32; 4] {
 
 /// Evaluates the guess against the secret
 ///
-/// # Sanity checks
+/// # Sanity checks (and examples!)
 /// ```
 /// use the_1a2b_game::evaluate;
 ///
@@ -192,25 +234,4 @@ pub fn pause() {
     stdout.write_all(b"Press Enter to quit...").unwrap();
     stdout.flush().unwrap();
     stdin().read_exact(&mut [0]).unwrap();
-}
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn test_validate_guess() {
-        use super::*;
-
-        // First the happy flow
-        let guess = ['1', '2', '3', '4'];
-        validate_guess(&guess);
-
-        let long_guess = ['1', '2', '3', '4', '5'];
-        assert_eq!(validate_guess(&long_guess), [9, 9, 9, 9]);
-
-        let short_guess = ['1', '2', '3'];
-        assert_eq!(validate_guess(&short_guess), [9, 9, 9, 9]);
-
-        let illegal_character_guess = ['1', '2', '3', '🦀'];
-        assert_eq!(validate_guess(&illegal_character_guess), [9, 9, 9, 9]);
-    }
 }
