@@ -1,5 +1,5 @@
 use colored::{ColoredString, Colorize};
-use std::io::{Read, Write, stderr, stdin, stdout};
+use std::io::{Write, stderr};
 use std::{io, panic};
 
 /// Explains the game, returns how many chances the player has, and generates and returns the secret.
@@ -225,13 +225,4 @@ pub fn colour_number(c: u32) -> ColoredString {
             c
         ),
     }
-}
-
-/// Waits for the player to press the Enter/Return-key.
-/// Credit goes to [u/K900_](https://old.reddit.com/r/rust/comments/8tfyof/noob_question_pause/e177530/)
-pub fn pause() {
-    let mut stdout = stdout();
-    stdout.write_all(b"Press Enter to quit...").unwrap();
-    stdout.flush().unwrap();
-    stdin().read_exact(&mut [0]).unwrap();
 }
